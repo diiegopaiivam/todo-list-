@@ -1,10 +1,10 @@
 import React from 'react'
-import { FaCalendar } from 'react-icons/fa';
+import { FaCalendarCheck } from 'react-icons/fa';
 
 export default props => (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
         <a href='/todos' className='navbar-brand' >
-            <FaCalendar /> TodoApp
+            <FaCalendarCheck /> Minhas Tarefas
         </a>
         <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
             <span className="navbar-toggler-icon"></span>

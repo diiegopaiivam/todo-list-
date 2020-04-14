@@ -10,20 +10,29 @@ export default class Todo extends Component {
         this.state = {
             description: '', list: []
         }
+        this.handleSearch = this.handleSearch.bind(this);
         this.handleAdd = this.handleAdd.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleRemove = this.handleRemove.bind(this);
+        this.handleMarkIsDone = this.handleMarkIsDone.bind(this);
+        this.handleMarkIsPending = this.handleMarkIsPending.bind(this);
+        this.handleClean = this.handleClean.bind(this);
+
         this.refresh();
     }
 
-    refresh() {
-        api.get('/')
+    refresh(description = '') {
+        const search = description ? `&description__regex=/${description}` : '' ;
+        api.get(`/${search}`)
           .then(response => this.setState({
               ...this.state, description: '', list: response.data
           })
         )        
     }
 
+    handleSearch(){
+        this.refresh(this.state.description);
+    }
 
     handleChange(e){
         this.setState({...this.state, description: e.target.value})
@@ -40,6 +49,20 @@ export default class Todo extends Component {
         .then(response => this.refresh())
     }
 
+    handleMarkIsDone(todo){
+        api.put(`/todo/${todo._id}`, {...todo, done: true})
+            .then(response => this.refresh())
+    }
+
+    handleMarkIsPending(todo){
+        api.put(`/todo/${todo._id}`, {...todo, done: false})
+            .then(response => this.refresh())
+    }
+
+    handleClean(){
+        this.refresh()
+    }
+
 
     render(){
         return(
@@ -48,10 +71,14 @@ export default class Todo extends Component {
                 <TodoForm 
                     description={this.state.description}
                     handleChange={this.handleChange}                
-                    handleAdd={this.handleAdd} 
+                    handleAdd={this.handleAdd}
+                    handleSearch={this.handleSearch}
+                    handleClean={this.handleClean} 
                 />
                 <TodoList 
                     list={this.state.list}
+                    handleMarkIsDone={this.handleMarkIsDone}
+                    handleMarkIsPending={this.handleMarkIsPending}
                     handleRemove={this.handleRemove}
                 />
             </div>
